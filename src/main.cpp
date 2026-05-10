@@ -192,28 +192,58 @@ void BitSequenceDemo() {
 }
 
 void Benchmark() {
-    const int count = 20000;
-    MutableArraySequence<int> arraySequence;
-    MutableListSequence<int> listSequence;
+    const int appendCount = 20000;
+    const int initialCount = 5000;
+    const int insertCount = 2000;
+    MutableArraySequence<int> arrayAppendSequence;
+    MutableListSequence<int> listAppendSequence;
 
     auto startArray = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < count; ++i) {
-        arraySequence.Append(i);
+    for (int i = 0; i < appendCount; ++i) {
+        arrayAppendSequence.Append(i);
     }
     auto endArray = std::chrono::high_resolution_clock::now();
 
     auto startList = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < count; ++i) {
-        listSequence.Append(i);
+    for (int i = 0; i < appendCount; ++i) {
+        listAppendSequence.Append(i);
     }
     auto endList = std::chrono::high_resolution_clock::now();
 
-    std::cout << "Append " << count << " items\n";
+    MutableArraySequence<int> arrayInsertSequence;
+    MutableListSequence<int> listInsertSequence;
+    for (int i = 0; i < initialCount; ++i) {
+        arrayInsertSequence.Append(i);
+        listInsertSequence.Append(i);
+    }
+
+    auto startArrayInsert = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < insertCount; ++i) {
+        arrayInsertSequence.InsertAt(-1, arrayInsertSequence.GetLength() / 2);
+    }
+    auto endArrayInsert = std::chrono::high_resolution_clock::now();
+
+    auto startListInsert = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < insertCount; ++i) {
+        listInsertSequence.InsertAt(-1, listInsertSequence.GetLength() / 2);
+    }
+    auto endListInsert = std::chrono::high_resolution_clock::now();
+
+    std::cout << "Append " << appendCount << " items\n";
     std::cout << "ArraySequence: "
               << std::chrono::duration_cast<std::chrono::milliseconds>(endArray - startArray).count()
               << " ms\n";
     std::cout << "ListSequence: "
               << std::chrono::duration_cast<std::chrono::milliseconds>(endList - startList).count()
+              << " ms\n";
+
+    std::cout << "\nInsertAt middle " << insertCount
+              << " times, initial length " << initialCount << "\n";
+    std::cout << "ArraySequence: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(endArrayInsert - startArrayInsert).count()
+              << " ms\n";
+    std::cout << "ListSequence: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(endListInsert - startListInsert).count()
               << " ms\n";
 }
 
