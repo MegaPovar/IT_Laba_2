@@ -105,7 +105,12 @@ Sequence<T>* Sequence<T>::Slice(int index, int count, const Sequence<T>* inserte
     }
 
     int length = GetLength();
-    int start = index < 0 ? length + index : index;
+    int start;
+    if (index < 0) {
+        start = length + index;
+    } else {
+        start = index;
+    }
     if (start < 0 || start > length) {
         throw IndexOutOfRange("Slice index is out of range");
     }
@@ -130,7 +135,12 @@ Sequence<T>* Sequence<T>::Slice(int index, int count, const Sequence<T>* inserte
 
 template <class T>
 Sequence<std::pair<T, T> >* Zip(const Sequence<T>* first, const Sequence<T>* second) {
-    int length = first->GetLength() < second->GetLength() ? first->GetLength() : second->GetLength();
+    int length;
+    if (first->GetLength() < second->GetLength()) {
+        length = first->GetLength();
+    } else {
+        length = second->GetLength();
+    }
     Sequence<std::pair<T, T> >* result = new MutableArraySequence<std::pair<T, T> >();
     for (int i = 0; i < length; ++i) {
         result->Append(std::make_pair(first->Get(i), second->Get(i)));

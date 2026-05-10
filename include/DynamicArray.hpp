@@ -2,41 +2,53 @@
 
 #include "Exceptions.hpp"
 
-template <class T>
+template <class T> // template для любого типа данных
 class DynamicArray {
 private:
-    T* data;
-    int size;
+    T* data; // указатель типа data -> [10][20][30]
+    int size; // элементы
 
-    void CheckIndex(int index) const {
+    void CheckIndex(int index) const { 
         if (index < 0 || index >= size) {
             throw IndexOutOfRange("DynamicArray index is out of range");
         }
     }
 
 public:
-    DynamicArray() : data(nullptr), size(0) {}
+    DynamicArray() : data(nullptr), size(0) {} // создаем пустой массив
 
-    DynamicArray(T* items, int count) : data(nullptr), size(count) {
+    DynamicArray(T* items, int count) : data(nullptr), size(count) { // DynamicArray из массива
         if (count < 0) {
             throw InvalidArgument("DynamicArray size cannot be negative");
         }
-        data = count == 0 ? nullptr : new T[count];
+        if (count == 0) {
+            data = nullptr;
+        } else {
+            data = new T[count]; // создаем массив в памяти с размером count
+        }
         for (int i = 0; i < count; ++i) {
             data[i] = items[i];
         }
     }
 
-    explicit DynamicArray(int size) : data(nullptr), size(size) {
+    explicit DynamicArray(int size) : data(nullptr), size(size) { // DynamicArray нужного размера
         if (size < 0) {
             throw InvalidArgument("DynamicArray size cannot be negative");
         }
-        data = size == 0 ? nullptr : new T[size]();
+        if (size == 0) {
+            data = nullptr;
+        } else {
+            data = new T[size](); // память под массив, () - заполняет нулями
+        }
     }
 
-    DynamicArray(const DynamicArray<T>& dynamicArray)
+    DynamicArray(const DynamicArray<T>& dynamicArray) // конструктор копирования. новый массив на основе другого для избежания проблемы поверхностного копирования
         : data(nullptr), size(dynamicArray.size) {
-        data = size == 0 ? nullptr : new T[size];
+        if (size == 0) {
+            data = nullptr;
+        } else {
+            data = new T[size]; // память для копирования нового
+        }
         for (int i = 0; i < size; ++i) {
             data[i] = dynamicArray.data[i];
         }
@@ -46,7 +58,12 @@ public:
         if (this == &other) {
             return *this;
         }
-        T* newData = other.size == 0 ? nullptr : new T[other.size];
+        T* newData;
+        if (other.size == 0) {
+            newData = nullptr;
+        } else {
+            newData = new T[other.size];
+        }
         for (int i = 0; i < other.size; ++i) {
             newData[i] = other.data[i];
         }
@@ -78,8 +95,19 @@ public:
         if (newSize < 0) {
             throw InvalidArgument("DynamicArray size cannot be negative");
         }
-        T* newData = newSize == 0 ? nullptr : new T[newSize]();
-        int copyCount = size < newSize ? size : newSize;
+        T* newData;
+        if (newSize == 0) {
+            newData = nullptr;
+        } else {
+            newData = new T[newSize]();
+        }
+
+        int copyCount;
+        if (size < newSize) {
+            copyCount = size;
+        } else {
+            copyCount = newSize;
+        }
         for (int i = 0; i < copyCount; ++i) {
             newData[i] = data[i];
         }

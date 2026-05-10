@@ -51,11 +51,11 @@ static void TestSequences() {
     int source[] = {1, 2, 3};
     MutableArraySequence<int> mutableArray(source, 3);
     Sequence<int>* same = mutableArray.Append(4);
-    assert(same == &mutableArray);
+    assert(same == &mutableArray); // append возвращает тот же объект
     assert(mutableArray.GetLast() == 4);
 
     ImmutableArraySequence<int> immutableArray(source, 3);
-    Sequence<int>* changed = immutableArray.Append(4);
+    Sequence<int>* changed = immutableArray.Append(4);  
     assert(immutableArray.GetLength() == 3);
     assert(changed->GetLength() == 4);
     assert(changed->GetLast() == 4);
