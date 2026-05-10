@@ -79,6 +79,21 @@ void FillSequence(Sequence<int>*& sequence) {
     }
 }
 
+MutableArraySequence<int> ReadInsertedSequence() {
+    int insertCount = ReadInt("How many items to insert: ");
+    if (insertCount < 0) {
+        throw InvalidArgument("Insert count cannot be negative");
+    }
+
+    MutableArraySequence<int> inserted;
+    for (int i = 0; i < insertCount; ++i) {
+        std::ostringstream prompt;
+        prompt << "insert[" << i << "]: ";
+        inserted.Append(ReadInt(prompt.str()));
+    }
+    return inserted;
+}
+
 void WorkWithSequence(Sequence<int>* sequence) {
     bool running = true;
     while (running) {
@@ -92,7 +107,7 @@ void WorkWithSequence(Sequence<int>* sequence) {
         std::cout << "7. Map x*x\n";
         std::cout << "8. Where even\n";
         std::cout << "9. Reduce sum\n";
-        std::cout << "10. Slice demo\n";
+        std::cout << "10. Slice\n";
         std::cout << "0. Back\n";
         int choice = ReadInt("Choice: ");
 
@@ -134,12 +149,15 @@ void WorkWithSequence(Sequence<int>* sequence) {
                 int sum = sequence->Reduce<int>([](int acc, int x) { return acc + x; }, 0);
                 std::cout << "Sum: " << sum << "\n";
             } else if (choice == 10) {
-                MutableArraySequence<int> inserted;
-                inserted.Append(9)->Append(10);
-                Sequence<int>* result = sequence->Slice(1, 2, &inserted);
-                PrintSequence(result);
+                int index = ReadInt("Start index, negative means from end: ");
+                int count = ReadInt("How many items to remove: ");
+                MutableArraySequence<int> inserted = ReadInsertedSequence();
+                Sequence<int>* result = sequence->Slice(index, count, &inserted);
+                delete sequence;
+                sequence = result;
+                std::cout << "Result: ";
+                PrintSequence(sequence);
                 std::cout << "\n";
-                delete result;
             } else if (choice == 0) {
                 running = false;
             }
