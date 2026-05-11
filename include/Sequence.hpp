@@ -31,7 +31,7 @@ public:
     template <class TResult>
     Sequence<TResult>* MapIndexed(std::function<TResult(T, int)> mapper) const; // map, но еще с индексом
 
-    Sequekce<T>* Where(std::function<bool(T)> predicate) const; // фильтрация
+    Sequence<T>* Where(std::function<bool(T)> predicate) const; // фильтрация
 
     template <class TResult>
     TResult Reduce(std::function<TResult(TResult, T)> reducer, TResult start) const; // свернуть в одно значение
@@ -40,7 +40,7 @@ public:
     Sequence<TResult>* FlatMap(std::function<Sequence<TResult>*(T)> mapper) const; // map + склеивание
 
     Option<T> TryGetFirst(std::function<bool(T)> predicate = nullptr) const;
-    Option<T> TryGetLast(std::function<bool(T)> predicate = nullptr) const
+    Option<T> TryGetLast(std::function<bool(T)> predicate = nullptr) const;
     Sequence<Sequence<T>*>* Split(std::function<bool(T)> separator) const; // разбить на куски
     Sequence<T>* Slice(int index, int count, const Sequence<T>* inserted = nullptr) const; // удалить кусок и вставить другой
 };
