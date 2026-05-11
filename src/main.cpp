@@ -5,7 +5,6 @@
 #include <string>
 
 #include "ArraySequence.hpp"
-#include "BitSequence.hpp"
 #include "ListSequence.hpp"
 #include "SequenceAlgorithms.hpp"
 
@@ -169,28 +168,6 @@ void WorkWithSequence(Sequence<int>* sequence) { // меню работы с к�
     delete sequence;
 }
 
-void BitSequenceDemo() { // отдельное меню для битовых операций
-    std::string first = ReadString("First bit sequence, example 1010: ");
-    std::string second = ReadString("Second bit sequence: ");
-
-    BitSequence a(first.c_str());
-    BitSequence b(second.c_str());
-    BitSequence andResult = a.And(b);
-    BitSequence orResult = a.Or(b);
-    BitSequence xorResult = a.Xor(b);
-    BitSequence notResult = a.Not();
-
-    std::cout << "AND: ";
-    PrintSequence(&andResult);
-    std::cout << "\nOR: ";
-    PrintSequence(&orResult);
-    std::cout << "\nXOR: ";
-    PrintSequence(&xorResult);
-    std::cout << "\nNOT first: ";
-    PrintSequence(&notResult);
-    std::cout << "\n";
-}
-
 void Benchmark() { // замер времени операций
     const int appendCount = 20000;
     const int initialCount = 5000;
@@ -255,8 +232,7 @@ int main() { // главное меню программы
         std::cout << "2. Immutable ArraySequence<int>\n";
         std::cout << "3. Mutable ListSequence<int>\n";
         std::cout << "4. Immutable ListSequence<int>\n";
-        std::cout << "5. BitSequence demo\n";
-        std::cout << "6. Benchmark\n";
+        std::cout << "5. Benchmark\n";
         std::cout << "0. Exit\n";
         int choice = ReadInt("Choice: ");
 
@@ -278,8 +254,6 @@ int main() { // главное меню программы
                 FillSequence(sequence);
                 WorkWithSequence(sequence);
             } else if (choice == 5) {
-                BitSequenceDemo();
-            } else if (choice == 6) {
                 Benchmark();
             } else if (choice == 0) {
                 running = false;

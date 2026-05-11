@@ -4,7 +4,6 @@
 #include <string>
 
 #include "ArraySequence.hpp"
-#include "BitSequence.hpp"
 #include "LinkedList.hpp"
 #include "ListSequence.hpp"
 #include "SequenceAlgorithms.hpp"
@@ -103,30 +102,11 @@ static void TestAlgorithms() { // тесты map/reduce/slice/option
     assert(found.Value() == 4);
 }
 
-static void TestBitSequence() { // тесты BitSequence
-    BitSequence a("1010");
-    BitSequence b("1100");
-
-    BitSequence andResult = a.And(b);
-    BitSequence orResult = a.Or(b);
-    BitSequence xorResult = a.Xor(b);
-    BitSequence notResult = a.Not();
-
-    assert(andResult.Get(0) == Bit(1));
-    assert(andResult.Get(1) == Bit(0));
-    assert(orResult.Get(1) == Bit(1));
-    assert(xorResult.Get(1) == Bit(1));
-    assert(notResult.Get(0) == Bit(0));
-    assert(notResult.Get(1) == Bit(1));
-    assert(a.IsSet(2));
-}
-
 int main() {
     TestDynamicArray();
     TestLinkedList();
     TestSequences();
     TestAlgorithms();
-    TestBitSequence();
 
     std::cout << "All tests passed" << std::endl;
     return 0;
