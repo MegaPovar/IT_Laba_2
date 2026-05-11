@@ -11,7 +11,7 @@ protected:
     virtual ArraySequenceBase<T>* Instance() = 0; // выбирает this или копию
     virtual ArraySequenceBase<T>* NewEmpty() const = 0; // создает пустой объект нужного типа
 
-    ArraySequenceBase<T>* AppendInternal(const T& item) { // реальное добавление в конец
+    ArraySequenceBase<T>* AppendInternal(const T& item) { // добавление в конец
         items.Resize(items.GetSize() + 1);
         items.Set(items.GetSize() - 1, item);
         return this;
