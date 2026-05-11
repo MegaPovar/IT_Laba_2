@@ -14,7 +14,7 @@ Sequence<TResult>* Sequence<T>::Map(std::function<TResult(T)> mapper) const { //
 
 template <class T>
 template <class TResult>
-Sequence<TResult>* Sequence<T>::MapIndexed(std::function<TResult(T, int)> mapper) const { // map + индекс
+Sequence<TResult>* Sequence<T>::MapIndexed(std::function<TResult(T, int)> mapper) const { // map + индекс 
     Sequence<TResult>* result = new MutableArraySequence<TResult>();
     for (int i = 0; i < GetLength(); ++i) {
         result->Append(mapper(Get(i), i));
@@ -23,7 +23,7 @@ Sequence<TResult>* Sequence<T>::MapIndexed(std::function<TResult(T, int)> mapper
 }
 
 template <class T>
-Sequence<T>* Sequence<T>::Where(std::function<bool(T)> predicate) const { // фильтр по условию
+Sequence<T>* Sequence<T>::Where(std::function<bool(T)> predicate) const { // фильтр по условию (потом %2 )
     Sequence<T>* result = new MutableArraySequence<T>();
     for (int i = 0; i < GetLength(); ++i) {
         T value = Get(i);
@@ -47,19 +47,19 @@ TResult Sequence<T>::Reduce(std::function<TResult(TResult, T)> reducer, TResult 
 template <class T>
 template <class TResult>
 Sequence<TResult>* Sequence<T>::FlatMap(std::function<Sequence<TResult>*(T)> mapper) const { // каждый элемент дает последовательность
-    Sequence<TResult>* result = new MutableArraySequence<TResult>();
+    Sequence<TResult>* result = new MutableArraySequence<TResult>(); 
     for (int i = 0; i < GetLength(); ++i) {
         Sequence<TResult>* part = mapper(Get(i)); // временная часть результата
         for (int j = 0; j < part->GetLength(); ++j) {
             result->Append(part->Get(j));
         }
-        delete part;
+        delete part; // удаляем временную часть, так как она уже склеена в результат
     }
     return result;
 }
 
 template <class T>
-Option<T> Sequence<T>::TryGetFirst(std::function<bool(T)> predicate) const { // найти первый через Option
+Option<T> Sequence<T>::TryGetFirst(std::function<bool(T)> predicate) const { // найти первый подходящий через Option слева направо
     for (int i = 0; i < GetLength(); ++i) {
         T value = Get(i);
         if (!predicate || predicate(value)) {

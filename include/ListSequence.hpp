@@ -54,7 +54,7 @@ public:
             result->AppendInternal(subList->Get(i));
         }
         delete subList;
-        return result;
+        return result; //напрямую сконструировать новый sequence вокруг sublist. конструктор который перемещает данный (приватный). пустой лист сиквенс создать и там взять протектед метод для разный мутабл анмутабл и получится список который уже потом добавим
     }
 
     Sequence<T>* Append(const T& item) override {
@@ -131,4 +131,4 @@ public:
 };
 
 template <class T>
-using ListSequence = MutableListSequence<T>;
+using ListSequence = MutableListSequence<T>; //useless замена имени MutableListSequence на ListSequence. Убрать

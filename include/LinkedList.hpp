@@ -28,7 +28,7 @@ private:
         for (int i = 0; i < index; ++i) {
             current = current->next; // начав с начала переходим к нужному
         }
-        return current;
+        return current;// добавить итератор указывающий на первый элемент списка чтобы сэкономить время while movenext
     }
 
 public:
@@ -164,7 +164,7 @@ public:
         return result;
     }
 
-    T& operator[](int index) {
+    T& operator[](int index) { // n раз вызывается, убрать
         return GetNode(index)->value;
     }
 

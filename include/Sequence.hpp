@@ -26,7 +26,7 @@ public:
     virtual const T& operator[](int index) const = 0;
 
     template <class TResult>
-    Sequence<TResult>* Map(std::function<TResult(T)> mapper) const; // применить функцию ко всем элементам
+    Sequence<TResult>* Map(std::function<TResult(T)> mapper) const; // применить функцию ко всем элементам // CRTP
 
     template <class TResult>
     Sequence<TResult>* MapIndexed(std::function<TResult(T, int)> mapper) const; // map, но еще с индексом

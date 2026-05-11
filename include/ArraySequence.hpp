@@ -76,7 +76,7 @@ public:
         for (int i = startIndex; i <= endIndex; ++i) {
             result->AppendInternal(Get(i));
         }
-        return result;
+o       return result; //взять это как пример и встаивть такое же в ListSequence
     }
 
     Sequence<T>* Append(const T& item) override { // снаружи сначала берем Instance()
