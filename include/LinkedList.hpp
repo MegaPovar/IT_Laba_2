@@ -9,7 +9,7 @@ private:
         T value;
         Node* next;
 
-        explicit Node(const T& value) : value(value), next(nullptr) {}
+        explicit Node(const T& value) : value(value), next(nullptr) {} // конструктор для создания узла 
     };
 
     Node* head;
@@ -22,28 +22,28 @@ private:
         }
     }
 
-    Node* GetNode(int index) const {
+    Node* GetNode(int index) const { // возвращает указатель на узел по индексу
         CheckIndex(index);
         Node* current = head;
         for (int i = 0; i < index; ++i) {
-            current = current->next;
+            current = current->next; // начав с начала переходим к нужному
         }
         return current;
     }
 
 public:
-    LinkedList() : head(nullptr), tail(nullptr), length(0) {}
+    LinkedList() : head(nullptr), tail(nullptr), length(0) {} // создали пустой
 
     LinkedList(T* items, int count) : LinkedList() {
         if (count < 0) {
             throw InvalidArgument("LinkedList length cannot be negative");
         }
         for (int i = 0; i < count; ++i) {
-            Append(items[i]);
+            Append(items[i]); // добавили в конец
         }
     }
 
-    LinkedList(const LinkedList<T>& list) : LinkedList() {
+    LinkedList(const LinkedList<T>& list) : LinkedList() { // так же как в DinamicArray конструктор копирования 
         Node* current = list.head;
         while (current != nullptr) {
             Append(current->value);
@@ -98,15 +98,15 @@ public:
         return GetNode(index)->value;
     }
 
-    LinkedList<T>* GetSubList(int startIndex, int endIndex) const {
+    LinkedList<T>* GetSubList(int startIndex, int endIndex) const { // создаем новый список на основе части другого списка от startIndex до endIndex включительно
         CheckIndex(startIndex);
         CheckIndex(endIndex);
         if (startIndex > endIndex) {
             throw InvalidArgument("startIndex cannot be greater than endIndex");
         }
-        LinkedList<T>* result = new LinkedList<T>();
+        LinkedList<T>* result = new LinkedList<T>(); // создаем новый 
         for (int i = startIndex; i <= endIndex; ++i) {
-            result->Append(Get(i));
+            result->Append(Get(i)); // скопировали нужные
         }
         return result;
     }
@@ -116,7 +116,7 @@ public:
     }
 
     void Append(const T& item) {
-        Node* node = new Node(item);
+        Node* node = new Node(item); // создаем новый узел
         if (length == 0) {
             head = node;
             tail = node;
@@ -137,29 +137,29 @@ public:
         ++length;
     }
 
-    void InsertAt(const T& item, int index) {
+    void InsertAt(const T& item, int index) { // вставка по индексу
         if (index < 0 || index > length) {
             throw IndexOutOfRange("LinkedList insert index is out of range");
         }
-        if (index == 0) {
+        if (index == 0) { // в начало
             Prepend(item);
             return;
         }
-        if (index == length) {
+        if (index == length) { // в конец
             Append(item);
             return;
         }
         Node* previous = GetNode(index - 1);
         Node* node = new Node(item);
-        node->next = previous->next;
+        node->next = previous->next; // переставляем ссылки относительно нового узла
         previous->next = node;
         ++length;
     }
 
-    LinkedList<T>* Concat(const LinkedList<T>* list) const {
-        LinkedList<T>* result = new LinkedList<T>(*this);
+    LinkedList<T>* Concat(const LinkedList<T>* list) const { // склеиваем два списка (list3 = list1.Concat(&list2))
+        LinkedList<T>* result = new LinkedList<T>(*this); // копируем
         for (int i = 0; i < list->GetLength(); ++i) {
-            result->Append(list->Get(i));
+            result->Append(list->Get(i)); // добавляем новые элементы в конец
         }
         return result;
     }

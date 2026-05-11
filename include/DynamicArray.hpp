@@ -54,8 +54,8 @@ public:
         }
     }
 
-    DynamicArray<T>& operator=(const DynamicArray<T>& other) {
-        if (this == &other) {
+    DynamicArray<T>& operator=(const DynamicArray<T>& other) { // 
+        if (this == &other) { // this указатель на те]кущий объект
             return *this;
         }
         T* newData;
@@ -64,7 +64,7 @@ public:
         } else {
             newData = new T[other.size];
         }
-        for (int i = 0; i < other.size; ++i) {
+        for (int i = 0; i < other.size; ++i) { //копируем данные в только что созданный массив
             newData[i] = other.data[i];
         }
         delete[] data;
@@ -74,10 +74,10 @@ public:
     }
 
     ~DynamicArray() {
-        delete[] data;
+        delete[] data; 
     }
 
-    T Get(int index) const {
+    T Get(int index) const { 
         CheckIndex(index);
         return data[index];
     }
@@ -86,7 +86,7 @@ public:
         return size;
     }
 
-    void Set(int index, const T& value) {
+    void Set(int index, const T& value) { // меняем элемент массива
         CheckIndex(index);
         data[index] = value;
     }
@@ -95,7 +95,7 @@ public:
         if (newSize < 0) {
             throw InvalidArgument("DynamicArray size cannot be negative");
         }
-        T* newData;
+        T* newData; // создаем новый
         if (newSize == 0) {
             newData = nullptr;
         } else {
@@ -108,11 +108,11 @@ public:
         } else {
             copyCount = newSize;
         }
-        for (int i = 0; i < copyCount; ++i) {
+        for (int i = 0; i < copyCount; ++i) { // копируем старое
             newData[i] = data[i];
         }
-        delete[] data;
-        data = newData;
+        delete[] data; // удаляем старое
+        data = newData; 
         size = newSize;
     }
 

@@ -9,7 +9,7 @@
 #include "ListSequence.hpp"
 #include "SequenceAlgorithms.hpp"
 
-int ReadInt(const std::string& prompt) {
+int ReadInt(const std::string& prompt) { // безопасный ввод int
     while (true) {
         std::cout << prompt;
 
@@ -18,7 +18,7 @@ int ReadInt(const std::string& prompt) {
             throw InvalidArgument("Input stream was closed");
         }
 
-        std::istringstream input(line);
+        std::istringstream input(line); // разбираем строку как число
         int value;
         char extra;
         if ((input >> value) && !(input >> extra)) {
@@ -29,7 +29,7 @@ int ReadInt(const std::string& prompt) {
     }
 }
 
-std::string ReadString(const std::string& prompt) {
+std::string ReadString(const std::string& prompt) { // безопасный ввод строки
     while (true) {
         std::cout << prompt;
 
@@ -47,7 +47,7 @@ std::string ReadString(const std::string& prompt) {
 }
 
 template <class T>
-void PrintSequence(const Sequence<T>* sequence) {
+void PrintSequence(const Sequence<T>* sequence) { // печать любой Sequence
     std::cout << "[";
     for (int i = 0; i < sequence->GetLength(); ++i) {
         if (i > 0) {
@@ -58,14 +58,14 @@ void PrintSequence(const Sequence<T>* sequence) {
     std::cout << "]";
 }
 
-void ReplaceIfNewInstance(Sequence<int>*& sequence, Sequence<int>* result) {
+void ReplaceIfNewInstance(Sequence<int>*& sequence, Sequence<int>* result) { // нужно для immutable
     if (result != sequence) {
         delete sequence;
         sequence = result;
     }
 }
 
-void FillSequence(Sequence<int>*& sequence) {
+void FillSequence(Sequence<int>*& sequence) { // заполнение последовательности с клавиатуры
     int count = ReadInt("Count: ");
     if (count < 0) {
         throw InvalidArgument("Count cannot be negative");
@@ -79,7 +79,7 @@ void FillSequence(Sequence<int>*& sequence) {
     }
 }
 
-MutableArraySequence<int> ReadInsertedSequence() {
+MutableArraySequence<int> ReadInsertedSequence() { // читаем элементы для вставки в Slice
     int insertCount = ReadInt("How many items to insert: ");
     if (insertCount < 0) {
         throw InvalidArgument("Insert count cannot be negative");
@@ -94,7 +94,7 @@ MutableArraySequence<int> ReadInsertedSequence() {
     return inserted;
 }
 
-void WorkWithSequence(Sequence<int>* sequence) {
+void WorkWithSequence(Sequence<int>* sequence) { // меню работы с конкретной sequence
     bool running = true;
     while (running) {
         std::cout << "\nSequence menu\n";
@@ -116,14 +116,14 @@ void WorkWithSequence(Sequence<int>* sequence) {
                 PrintSequence(sequence);
                 std::cout << "\n";
             } else if (choice == 2) {
-                int value = ReadInt("Value: ");
+                int value = ReadInt("Value: "); // добавить в конец
                 ReplaceIfNewInstance(sequence, sequence->Append(value));
             } else if (choice == 3) {
-                int value = ReadInt("Value: ");
+                int value = ReadInt("Value: "); // добавить в начало
                 ReplaceIfNewInstance(sequence, sequence->Prepend(value));
             } else if (choice == 4) {
                 int value = ReadInt("Value: ");
-                int index = ReadInt("Index: ");
+                int index = ReadInt("Index: "); // куда вставить
                 ReplaceIfNewInstance(sequence, sequence->InsertAt(value, index));
             } else if (choice == 5) {
                 int index = ReadInt("Index: ");
@@ -151,8 +151,8 @@ void WorkWithSequence(Sequence<int>* sequence) {
             } else if (choice == 10) {
                 int index = ReadInt("Start index, negative means from end: ");
                 int count = ReadInt("How many items to remove: ");
-                MutableArraySequence<int> inserted = ReadInsertedSequence();
-                Sequence<int>* result = sequence->Slice(index, count, &inserted);
+                MutableArraySequence<int> inserted = ReadInsertedSequence(); // на что заменяем
+                Sequence<int>* result = sequence->Slice(index, count, &inserted); // новый результат
                 delete sequence;
                 sequence = result;
                 std::cout << "Result: ";
@@ -169,7 +169,7 @@ void WorkWithSequence(Sequence<int>* sequence) {
     delete sequence;
 }
 
-void BitSequenceDemo() {
+void BitSequenceDemo() { // отдельное меню для битовых операций
     std::string first = ReadString("First bit sequence, example 1010: ");
     std::string second = ReadString("Second bit sequence: ");
 
@@ -191,39 +191,39 @@ void BitSequenceDemo() {
     std::cout << "\n";
 }
 
-void Benchmark() {
+void Benchmark() { // замер времени операций
     const int appendCount = 20000;
     const int initialCount = 5000;
     const int insertCount = 2000;
     MutableArraySequence<int> arrayAppendSequence;
     MutableListSequence<int> listAppendSequence;
 
-    auto startArray = std::chrono::high_resolution_clock::now();
+    auto startArray = std::chrono::high_resolution_clock::now(); // старт замера Array append
     for (int i = 0; i < appendCount; ++i) {
         arrayAppendSequence.Append(i);
     }
     auto endArray = std::chrono::high_resolution_clock::now();
 
-    auto startList = std::chrono::high_resolution_clock::now();
+    auto startList = std::chrono::high_resolution_clock::now(); // старт замера List append
     for (int i = 0; i < appendCount; ++i) {
         listAppendSequence.Append(i);
     }
     auto endList = std::chrono::high_resolution_clock::now();
 
-    MutableArraySequence<int> arrayInsertSequence;
+    MutableArraySequence<int> arrayInsertSequence; // отдельные sequence для вставки в середину
     MutableListSequence<int> listInsertSequence;
     for (int i = 0; i < initialCount; ++i) {
         arrayInsertSequence.Append(i);
         listInsertSequence.Append(i);
     }
 
-    auto startArrayInsert = std::chrono::high_resolution_clock::now();
+    auto startArrayInsert = std::chrono::high_resolution_clock::now(); // старт замера Array insert
     for (int i = 0; i < insertCount; ++i) {
         arrayInsertSequence.InsertAt(-1, arrayInsertSequence.GetLength() / 2);
     }
     auto endArrayInsert = std::chrono::high_resolution_clock::now();
 
-    auto startListInsert = std::chrono::high_resolution_clock::now();
+    auto startListInsert = std::chrono::high_resolution_clock::now(); // старт замера List insert
     for (int i = 0; i < insertCount; ++i) {
         listInsertSequence.InsertAt(-1, listInsertSequence.GetLength() / 2);
     }
@@ -247,7 +247,7 @@ void Benchmark() {
               << " ms\n";
 }
 
-int main() {
+int main() { // главное меню программы
     bool running = true;
     while (running) {
         std::cout << "\nLab 2: Sequence ADT\n";

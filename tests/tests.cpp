@@ -9,7 +9,7 @@
 #include "ListSequence.hpp"
 #include "SequenceAlgorithms.hpp"
 
-static void TestDynamicArray() {
+static void TestDynamicArray() { // тесты DynamicArray
     int source[] = {1, 2, 3};
     DynamicArray<int> array(source, 3);
     assert(array.GetSize() == 3);
@@ -30,7 +30,7 @@ static void TestDynamicArray() {
     assert(thrown);
 }
 
-static void TestLinkedList() {
+static void TestLinkedList() { // тесты LinkedList
     int source[] = {2, 3};
     LinkedList<int> list(source, 2);
     list.Prepend(1);
@@ -47,7 +47,7 @@ static void TestLinkedList() {
     delete sub;
 }
 
-static void TestSequences() {
+static void TestSequences() { // тесты mutable/immutable sequence
     int source[] = {1, 2, 3};
     MutableArraySequence<int> mutableArray(source, 3);
     Sequence<int>* same = mutableArray.Append(4);
@@ -67,20 +67,20 @@ static void TestSequences() {
     assert(listSeq[2] == 2);
 }
 
-static void TestAlgorithms() {
+static void TestAlgorithms() { // тесты map/reduce/slice/option
     int source[] = {1, 2, 3, 4, 5};
     MutableArraySequence<int> sequence(source, 5);
 
-    Sequence<int>* squares = sequence.Map<int>([](int x) { return x * x; });
+    Sequence<int>* squares = sequence.Map<int>([](int x) { return x * x; }); // квадраты
     assert(squares->Get(2) == 9);
     delete squares;
 
-    Sequence<int>* even = sequence.Where([](int x) { return x % 2 == 0; });
+    Sequence<int>* even = sequence.Where([](int x) { return x % 2 == 0; }); // только четные
     assert(even->GetLength() == 2);
     assert(even->Get(1) == 4);
     delete even;
 
-    int sum = sequence.Reduce<int>([](int acc, int x) { return acc + x; }, 0);
+    int sum = sequence.Reduce<int>([](int acc, int x) { return acc + x; }, 0); // сумма
     assert(sum == 15);
 
     Sequence<int>* indexed = sequence.MapIndexed<int>([](int x, int index) { return x + index; });
@@ -103,7 +103,7 @@ static void TestAlgorithms() {
     assert(found.Value() == 4);
 }
 
-static void TestBitSequence() {
+static void TestBitSequence() { // тесты BitSequence
     BitSequence a("1010");
     BitSequence b("1100");
 
