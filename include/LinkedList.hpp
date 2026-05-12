@@ -32,6 +32,31 @@ private:
     }
 
 public:
+    class Iterator {
+    private:
+        const Node* current;
+
+    public:
+        explicit Iterator(const Node* start) : current(start) {}
+
+        bool HasValue() const {
+            return current != nullptr;
+        }
+
+        T Get() const {
+            if (current == nullptr) {
+                throw IndexOutOfRange("Iterator is out of range");
+            }
+            return current->value;
+        }
+
+        void MoveNext() {
+            if (current != nullptr) {
+                current = current->next;
+            }
+        }
+    };
+
     LinkedList() : head(nullptr), tail(nullptr), length(0) {} // создали пустой
 
     LinkedList(T* items, int count) : LinkedList() {
@@ -44,10 +69,10 @@ public:
     }
 
     LinkedList(const LinkedList<T>& list) : LinkedList() { // так же как в DinamicArray конструктор копирования 
-        Node* current = list.head;
-        while (current != nullptr) {
-            Append(current->value);
-            current = current->next;
+        Iterator iterator = list.Begin();
+        while (iterator.HasValue()) {
+            Append(iterator.Get());
+            iterator.MoveNext();
         }
     }
 
@@ -56,10 +81,10 @@ public:
             return *this;
         }
         Clear();
-        Node* current = other.head;
-        while (current != nullptr) {
-            Append(current->value);
-            current = current->next;
+        Iterator iterator = other.Begin();
+        while (iterator.HasValue()) {
+            Append(iterator.Get());
+            iterator.MoveNext();
         }
         return *this;
     }
@@ -98,6 +123,10 @@ public:
         return GetNode(index)->value;
     }
 
+    Iterator Begin() const { // итератор на первый элемент
+        return Iterator(head);
+    }
+
     LinkedList<T>* GetSubList(int startIndex, int endIndex) const { // создаем новый список на основе части другого списка от startIndex до endIndex включительно
         CheckIndex(startIndex);
         CheckIndex(endIndex);
@@ -105,8 +134,13 @@ public:
             throw InvalidArgument("startIndex cannot be greater than endIndex");
         }
         LinkedList<T>* result = new LinkedList<T>(); // создаем новый 
+        Iterator iterator = Begin();
+        for (int i = 0; i < startIndex; ++i) {
+            iterator.MoveNext();
+        }
         for (int i = startIndex; i <= endIndex; ++i) {
-            result->Append(Get(i)); // скопировали нужные
+            result->Append(iterator.Get()); // скопировали нужные
+            iterator.MoveNext();
         }
         return result;
     }
@@ -158,8 +192,10 @@ public:
 
     LinkedList<T>* Concat(const LinkedList<T>* list) const { // склеиваем два списка (list3 = list1.Concat(&list2))
         LinkedList<T>* result = new LinkedList<T>(*this); // копируем
-        for (int i = 0; i < list->GetLength(); ++i) {
-            result->Append(list->Get(i)); // добавляем новые элементы в конец
+        Iterator iterator = list->Begin();
+        while (iterator.HasValue()) {
+            result->Append(iterator.Get()); // добавляем новые элементы в конец
+            iterator.MoveNext();
         }
         return result;
     }

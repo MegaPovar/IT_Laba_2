@@ -28,23 +28,6 @@ int ReadInt(const std::string& prompt) { // безопасный ввод int
     }
 }
 
-std::string ReadString(const std::string& prompt) { // безопасный ввод строки
-    while (true) {
-        std::cout << prompt;
-
-        std::string value;
-        if (!std::getline(std::cin, value)) {
-            throw InvalidArgument("Input stream was closed");
-        }
-
-        if (!value.empty()) {
-            return value;
-        }
-
-        std::cout << "Input error: value cannot be empty\n";
-    }
-}
-
 template <class T>
 void PrintSequence(const Sequence<T>* sequence) { // печать любой Sequence
     std::cout << "[";

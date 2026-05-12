@@ -48,13 +48,23 @@ public:
     }
 
     Sequence<T>* GetSubsequence(int startIndex, int endIndex) const override { // кусок последовательности
-        LinkedList<T>* subList = items.GetSubList(startIndex, endIndex); // временный подсписок
-        ListSequenceBase<T>* result = NewEmpty(); // результат нужного типа
-        for (int i = 0; i < subList->GetLength(); ++i) {
-            result->AppendInternal(subList->Get(i));
+        if (startIndex < 0 || endIndex < 0 || startIndex >= GetLength() || endIndex >= GetLength()) {
+            throw IndexOutOfRange("ListSequence subsequence index is out of range");
         }
-        delete subList;
-        return result; //напрямую сконструировать новый sequence вокруг sublist. конструктор который перемещает данный (приватный). пустой лист сиквенс создать и там взять протектед метод для разный мутабл анмутабл и получится список который уже потом добавим
+        if (startIndex > endIndex) {
+            throw InvalidArgument("startIndex cannot be greater than endIndex");
+        }
+
+        ListSequenceBase<T>* result = NewEmpty(); // результат нужного типа
+        typename LinkedList<T>::Iterator iterator = items.Begin(); // идем по списку без лишнего subList
+        for (int i = 0; i < startIndex; ++i) {
+            iterator.MoveNext();
+        }
+        for (int i = startIndex; i <= endIndex; ++i) {
+            result->AppendInternal(iterator.Get());
+            iterator.MoveNext();
+        }
+        return result;
     }
 
     Sequence<T>* Append(const T& item) override {
@@ -129,6 +139,3 @@ public:
         return new ImmutableListSequence<T>(*this);
     }
 };
-
-template <class T>
-using ListSequence = MutableListSequence<T>; //useless замена имени MutableListSequence на ListSequence. Убрать

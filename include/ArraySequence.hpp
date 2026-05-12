@@ -76,7 +76,7 @@ public:
         for (int i = startIndex; i <= endIndex; ++i) {
             result->AppendInternal(Get(i));
         }
-o       return result; //взять это как пример и встаивть такое же в ListSequence
+        return result;
     }
 
     Sequence<T>* Append(const T& item) override { // снаружи сначала берем Instance()
@@ -149,6 +149,3 @@ public:
         return new ImmutableArraySequence<T>(*this);
     }
 };
-
-template <class T>
-using ArraySequence = MutableArraySequence<T>;

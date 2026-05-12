@@ -64,6 +64,12 @@ static void TestSequences() { // тесты mutable/immutable sequence
     listSeq.Prepend(0);
     assert(listSeq.GetFirst() == 0);
     assert(listSeq[2] == 2);
+
+    Sequence<int>* listSub = listSeq.GetSubsequence(1, 2);
+    assert(listSub->GetLength() == 2);
+    assert(listSub->Get(0) == 1);
+    assert(listSub->Get(1) == 2);
+    delete listSub;
 }
 
 static void TestAlgorithms() { // тесты map/reduce/slice/option

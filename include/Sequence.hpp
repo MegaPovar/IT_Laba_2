@@ -5,8 +5,34 @@
 
 #include "Option.hpp"
 
+template <class T>
+class Sequence;
+
+template <class T, class TSelf> // CRTP слой с общими алгоритмами для sequence
+class SequenceOperations {
+public:
+    template <class TResult>
+    Sequence<TResult>* Map(std::function<TResult(T)> mapper) const; // применить функцию ко всем элементам
+
+    template <class TResult>
+    Sequence<TResult>* MapIndexed(std::function<TResult(T, int)> mapper) const; // map, но еще с индексом
+
+    Sequence<T>* Where(std::function<bool(T)> predicate) const; // фильтрация
+
+    template <class TResult>
+    TResult Reduce(std::function<TResult(TResult, T)> reducer, TResult start) const; // свернуть в одно значение
+
+    template <class TResult>
+    Sequence<TResult>* FlatMap(std::function<Sequence<TResult>*(T)> mapper) const; // map + склеивание
+
+    Option<T> TryGetFirst(std::function<bool(T)> predicate = nullptr) const;
+    Option<T> TryGetLast(std::function<bool(T)> predicate = nullptr) const;
+    Sequence<Sequence<T>*>* Split(std::function<bool(T)> separator) const; // разбить на куски
+    Sequence<T>* Slice(int index, int count, const Sequence<T>* inserted = nullptr) const; // удалить кусок и вставить другой
+};
+
 template <class T> // общий интерфейс для любой последовательности
-class Sequence {
+class Sequence : public SequenceOperations<T, Sequence<T>> {
 public:
     virtual ~Sequence() {} // virtual чтобы наследники нормально удалялись через Sequence*
 
@@ -25,24 +51,6 @@ public:
     virtual T& operator[](int index) = 0; // доступ через []
     virtual const T& operator[](int index) const = 0;
 
-    template <class TResult>
-    Sequence<TResult>* Map(std::function<TResult(T)> mapper) const; // применить функцию ко всем элементам // CRTP
-
-    template <class TResult>
-    Sequence<TResult>* MapIndexed(std::function<TResult(T, int)> mapper) const; // map, но еще с индексом
-
-    Sequence<T>* Where(std::function<bool(T)> predicate) const; // фильтрация
-
-    template <class TResult>
-    TResult Reduce(std::function<TResult(TResult, T)> reducer, TResult start) const; // свернуть в одно значение
-
-    template <class TResult>
-    Sequence<TResult>* FlatMap(std::function<Sequence<TResult>*(T)> mapper) const; // map + склеивание
-
-    Option<T> TryGetFirst(std::function<bool(T)> predicate = nullptr) const;
-    Option<T> TryGetLast(std::function<bool(T)> predicate = nullptr) const;
-    Sequence<Sequence<T>*>* Split(std::function<bool(T)> separator) const; // разбить на куски
-    Sequence<T>* Slice(int index, int count, const Sequence<T>* inserted = nullptr) const; // удалить кусок и вставить другой
 };
 
 template <class T>
